@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Validator;
 use App\Models\Tweet;
+use App\Models\Replie;
 use Auth;
 use App\Models\User;
 
@@ -137,6 +138,25 @@ public function store(Request $request)
       ->orderBy('created_at','desc')
       ->get();
     return view('tweet.index', compact('tweets'));
+  }
+
+  public function timeline()
+  {
+    // フォローしているユーザを取得する
+    $followings = User::find(Auth::id())->followings->pluck('id')->all();
+    // 自分とフォローしている人が投稿したツイートを取得する
+    $tweets = Tweet::query()
+      ->where('user_id', Auth::id())
+      ->orWhereIn('user_id', $followings)
+      ->orderBy('updated_at', 'desc')
+      ->get();
+    return view('tweet.index', compact('tweets'));
+  }
+
+  public function reply($id)
+  {
+    $tweet = Tweet::find($id);
+    return view('reply.create', compact('tweet'));
   }
 
 }

@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\User;
+use App\Models\Tweet;
 use Auth;
+use App\Models\User;
 
-class FollowController extends Controller
+class ProfileController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -25,7 +26,7 @@ class FollowController extends Controller
      */
     public function create()
     {
-        //
+        return view('profile.create');
     }
 
     /**
@@ -34,10 +35,17 @@ class FollowController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(User $user)
+    public function store(Request $request)
     {
-        Auth::user()->followings()->attach($user->id);
-        return redirect()->back();
+        $img = $request->file('image');
+        // sampleディレクトリに画像を保存
+        //$request->file('image')->store('public/' . $dir);
+        $path = $img->store('images','public');
+        User::where('id', '=', Auth::user()->id)->update([
+            'icon' => $path
+        ]);
+
+        return redirect()->route('tweet.index');
     }
 
     /**
@@ -48,14 +56,7 @@ class FollowController extends Controller
      */
     public function show($id)
     {
-      // ターゲットユーザのデータ
-      $user = User::find($id);
-      // ターゲットユーザのフォロワー一覧
-      $followers = $user->followers;
-      // ターゲットユーザのフォローしている人一覧
-      $followings  = $user->followings;
-    
-      return view('user.show', compact('user', 'followers', 'followings'));
+        //
     }
 
     /**
@@ -87,10 +88,8 @@ class FollowController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy(User $user)
+    public function destroy($id)
     {
-        Auth::user()->followings()->detach($user->id);
-        return redirect()->back();
+        //
     }
-    
 }

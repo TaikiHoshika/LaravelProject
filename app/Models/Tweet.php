@@ -32,5 +32,10 @@ class Tweet extends Model
   {
     return $this->belongsToMany(User::class)->withTimestamps();
   }
+
+  public function replies()
+  {
+    return $this->hasMany(Replie::class);
+  }
 }
 
