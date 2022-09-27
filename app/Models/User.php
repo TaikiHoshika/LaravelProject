@@ -21,6 +21,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'icon',
     ];
 
     /**
@@ -45,5 +46,20 @@ class User extends Authenticatable
     public function userTweets()
     {
         return $this->hasMany(Tweet::class);
+    }
+
+    public function tweets()
+    {
+        return $this->belongsToMany(Tweet::class)->withTimestamps();
+    }
+
+    public function followings()
+    {
+        return $this->belongsToMany(self::class, "follows", "user_id", "following_id")->withTimestamps();
+    }
+    
+    public function followers()
+    {
+        return $this->belongsToMany(self::class, "follows", "following_id", "user_id")->withTimestamps();
     }
 }

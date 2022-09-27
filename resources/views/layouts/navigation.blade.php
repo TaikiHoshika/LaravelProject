@@ -1,21 +1,18 @@
+<!-- resources/views/layouts/navigation.blade.php -->
+
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
   <!-- Primary Navigation Menu -->
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
     <div class="flex justify-between h-16">
       <div class="flex">
         <!-- Logo -->
-        <div class="flex-shrink-0 flex items-center">
-          <a href="{{ route('dashboard') }}">
+        <div class="shrink-0 flex items-center">
+          <a href="{{ route('tweet.index') }}">
             <x-application-logo class="block h-10 w-auto fill-current text-gray-600" />
           </a>
         </div>
 
-        <!-- Navigation Links -->
-        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
-          <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-            {{ __('Dashboard') }}
-          </x-nav-link>
-        </div>
+
         <!-- 🔽 一覧ページへのリンクを追加 -->
         <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
           <x-nav-link :href="route('tweet.index')" :active="request()->routeIs('tweet.index')">
@@ -34,6 +31,27 @@
             {{ __('Mypage') }}
           </x-nav-link>
         </div>
+        <!-- 🔽 タイムラインへのリンクを追加 -->
+        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+          <x-nav-link :href="route('tweet.timeline')" :active="request()->routeIs('tweet.timeline')">
+            {{ __('Timeline') }}
+          </x-nav-link>
+        </div>
+
+        <!-- 🔽 検索画面へのリンクを追加 -->
+        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+          <x-nav-link :href="route('search.input')" :active="request()->routeIs('search.input')">
+            {{ __('Search') }}
+          </x-nav-link>
+        </div>
+
+        <!-- 🔽 検索画面へのリンクを追加 -->
+        <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+          <x-nav-link :href="route('profile.create')" :active="request()->routeIs('profile.create')">
+            {{ __('Change Icon') }}
+          </x-nav-link>
+        </div>
+
       </div>
 
       <!-- Settings Dropdown -->
@@ -41,6 +59,13 @@
         <x-dropdown align="right" width="48">
           <x-slot name="trigger">
             <button class="flex items-center text-sm font-medium text-gray-500 hover:text-gray-700 hover:border-gray-300 focus:outline-none focus:text-gray-700 focus:border-gray-300 transition duration-150 ease-in-out">
+              <div>
+                @if(isset(Auth::user()->icon))
+                  <img style="border-radius: 50%; width: 50px" src="{{ Storage::url(Auth::user()->icon) }}">
+                @else
+                  <img style="border-radius: 50%; width: 50px" src="{{asset('images/icon_default.png')}}">
+                @endif
+              </div>
               <div>{{ Auth::user()->name }}</div>
 
               <div class="ml-1">
@@ -58,7 +83,7 @@
 
               <x-dropdown-link :href="route('logout')" onclick="event.preventDefault();
                                                 this.closest('form').submit();">
-                {{ __('Logout') }}
+                {{ __('Log Out') }}
               </x-dropdown-link>
             </form>
           </x-slot>
@@ -79,11 +104,6 @@
 
   <!-- Responsive Navigation Menu -->
   <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
-    <div class="pt-2 pb-3 space-y-1">
-      <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-        {{ __('Dashboard') }}
-      </x-responsive-nav-link>
-    </div>
     <!-- 🔽 一覧ページへのリンクを追加 -->
     <div class="pt-2 pb-3 space-y-1">
       <x-responsive-nav-link :href="route('tweet.index')" :active="request()->routeIs('tweet.index')">
@@ -102,20 +122,31 @@
         {{ __('Mypage') }}
       </x-responsive-nav-link>
     </div>
+    <!-- 🔽 タイムラインへのリンクを追加 -->
+    <div class="pt-2 pb-3 space-y-1">
+      <x-responsive-nav-link :href="route('tweet.timeline')" :active="request()->routeIs('tweet.timeline')">
+        {{ __('Timeline') }}
+      </x-responsive-nav-link>
+    </div>
+
+    <!-- 🔽 検索画面へのリンクを追加 -->
+    <div class="pt-2 pb-3 space-y-1">
+      <x-responsive-nav-link :href="route('search.input')" :active="request()->routeIs('search.input')">
+        {{ __('Search') }}
+      </x-responsive-nav-link>
+    </div>
+    <!-- 🔽 検索画面へのリンクを追加 -->
+    <div class="pt-2 pb-3 space-y-1">
+      <x-nav-link :href="route('profile.create')" :active="request()->routeIs('profile.create')">
+        {{ __('Change Icon') }}
+      </x-nav-link>
+    </div>
 
     <!-- Responsive Settings Options -->
     <div class="pt-4 pb-1 border-t border-gray-200">
-      <div class="flex items-center px-4">
-        <div class="flex-shrink-0">
-          <svg class="h-10 w-10 fill-current text-gray-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-          </svg>
-        </div>
-
-        <div class="ml-3">
-          <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
-          <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
-        </div>
+      <div class="px-4">
+        <div class="font-medium text-base text-gray-800">{{ Auth::user()->name }}</div>
+        <div class="font-medium text-sm text-gray-500">{{ Auth::user()->email }}</div>
       </div>
 
       <div class="mt-3 space-y-1">
@@ -125,10 +156,11 @@
 
           <x-responsive-nav-link :href="route('logout')" onclick="event.preventDefault();
                                         this.closest('form').submit();">
-            {{ __('Logout') }}
+            {{ __('Log Out') }}
           </x-responsive-nav-link>
         </form>
       </div>
     </div>
   </div>
 </nav>
+
